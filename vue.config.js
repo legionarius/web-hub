@@ -3,12 +3,7 @@ const path = require("path");
 const godotFolder = path.resolve(`${__dirname}/src/godot`);
 module.exports = {
   chainWebpack: (config) => {
-    //const babelLoaderRule = config.module.rule("js");
-    //const eslintLoaderRule = config.module.rule("eslint");
     const godotLoaderRule = config.module.rule("godot");
-
-    //babelLoaderRule.exclude.add(godotFolder);
-    //eslintLoaderRule.exclude.add(godotFolder);
     godotLoaderRule
       .test(/\.(wasm|pck)$/)
       .use("file-loader")
