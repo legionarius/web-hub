@@ -24,18 +24,22 @@
 </template>
 
 <script>
-import { defineComponent } from "vue";
-import { Engine } from "@/godot";
+import { defineComponent, onUnmounted } from "vue";
+import { Engine } from "@/godot/godot.js";
+import { useRouter } from "vue-router";
 
 export default defineComponent({
   setup() {
+    const router = useRouter();
     const GODOT_CONFIG = {
       args: [],
       canvasResizePolicy: 1,
-      executable: "index",
+      executable: `src/godot/${router.currentRoute.value.params.game}/index`,
       experimentalVK: false,
       fileSizes: { "index.pck": 13681728, "index.wasm": 1270027 },
-      gdnativeLibs: ["libgdnative.wasm"],
+      gdnativeLibs: [
+        `src/godot/${router.currentRoute.value.params.game}/libgdnative.wasm`,
+      ],
     };
     const engine = new Engine(GODOT_CONFIG);
 
@@ -43,7 +47,6 @@ export default defineComponent({
       var msg = err.message || err;
       console.error("Erreur de chargemebt", msg);
     }
-
     engine
       .startGame({
         onProgress: function (current, total) {
@@ -53,6 +56,10 @@ export default defineComponent({
       .then(() => {
         console.log("game started");
       }, displayFailureNotice);
+
+    onUnmounted(() => {
+      engine.requestQuit();
+    });
   },
 });
 </script>

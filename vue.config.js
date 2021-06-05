@@ -9,7 +9,7 @@ module.exports = {
       .use("file-loader")
       .loader("file-loader")
       .options({
-        name: "[name].[ext]",
+        name: "[path][name].[ext]",
       });
     config.resolve.extensions.delete(".wasm");
   },

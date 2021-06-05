@@ -2,9 +2,14 @@ import { createApp } from "vue";
 import App from "./App.vue";
 import router from "./router";
 
-require("./godot/index.pck");
-require("./godot/index.wasm");
-require("./godot/index.side.wasm");
-require("./godot/libgdnative.wasm");
+require("./godot/puppets-runner/index.pck");
+require("./godot/puppets-runner/index.wasm");
+require("./godot/puppets-runner/index.side.wasm");
+require("./godot/puppets-runner/libgdnative.wasm");
+
+require("./godot/alien-abduction/index.pck");
+require("./godot/alien-abduction/index.wasm");
+require("./godot/alien-abduction/index.side.wasm");
+require("./godot/alien-abduction/libgdnative.wasm");
 
 createApp(App).use(router).mount("#app");

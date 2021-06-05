@@ -1,7 +1,8 @@
 <template>
   <div id="nav">
     <router-link to="/">Home</router-link> |
-    <router-link to="/games">Games</router-link>
+    <router-link to="/games/alien-abduction">AlienAbduction</router-link> |
+    <router-link to="/games/puppets-runner">PuppetsRunner</router-link>
   </div>
   <router-view />
 </template>
