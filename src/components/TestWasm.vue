@@ -25,13 +25,13 @@
 
 <script>
 import { defineComponent } from "vue";
-import { Engine } from "../godot/godot.js";
+import { Engine } from "@/godot";
 
 export default defineComponent({
   setup() {
     const GODOT_CONFIG = {
       args: [],
-      canvasResizePolicy: 2,
+      canvasResizePolicy: 1,
       executable: "index",
       experimentalVK: false,
       fileSizes: { "index.pck": 13681728, "index.wasm": 1270027 },
@@ -68,9 +68,9 @@ body {
 }
 
 #canvas {
-  display: block;
-  margin: 0;
   color: white;
+  width: 1800px;
+  height: 1013px;
 }
 
 #canvas:focus {
