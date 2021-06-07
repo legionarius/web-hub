@@ -1175,6 +1175,7 @@ var Godot = (function () {
     Module["resolveGlobalSymbol"] = resolveGlobalSymbol;
     function loadWebAssemblyModule(binary, flags) {
       var metadata = getDylinkMetadata(binary);
+      console.log("metadata", metadata);
       function loadModule() {
         var memAlign = Math.pow(2, metadata.memoryAlign);
         memAlign = Math.max(memAlign, STACK_ALIGN);
@@ -1256,6 +1257,7 @@ var Godot = (function () {
             return Promise.resolve(postInstantiation(instance));
           }
           return WebAssembly.instantiate(binary, info).then(function (result) {
+            console.log("web assembly inst&ance:", result);
             return postInstantiation(result.instance);
           });
         }
@@ -1278,6 +1280,7 @@ var Godot = (function () {
           });
       }
       metadata.neededDynlibs.forEach(function (dynNeeded) {
+        console.log("l 1281", dynNeeded);
         loadDynamicLibrary(dynNeeded, flags);
       });
       return loadModule();
@@ -1297,6 +1300,7 @@ var Godot = (function () {
     }
     Module["fetchBinary"] = fetchBinary;
     function loadDynamicLibrary(lib, flags) {
+      console.log("load dynamic", lib);
       if (lib == "__main__" && !LDSO.loadedLibNames[lib]) {
         LDSO.loadedLibs[-1] = {
           refcount: Infinity,
@@ -1346,6 +1350,7 @@ var Godot = (function () {
         return readBinary(libFile);
       }
       function getLibModule() {
+        console.log("Get lib");
         if (
           Module["preloadedWasm"] !== undefined &&
           Module["preloadedWasm"][lib] !== undefined
@@ -1358,6 +1363,7 @@ var Godot = (function () {
             return loadWebAssemblyModule(libData, flags);
           });
         }
+        console.log("TESTST");
         return loadWebAssemblyModule(loadLibData(lib), flags);
       }
       function moduleLoaded(libModule) {
@@ -21662,6 +21668,7 @@ var Godot = (function () {
     var DLFCN = { error: null, errorMsg: null };
     Module["DLFCN"] = DLFCN;
     function _dlopen(filenameAddr, flags) {
+      console.log("file addr: ", filenameAddr);
       var searchpaths = [];
       var filename;
       if (filenameAddr === 0) {
@@ -21672,6 +21679,7 @@ var Godot = (function () {
           var target = FS.findObject(filename);
           return target && !target.isFolder && !target.isDevice;
         };
+        console.log("env lib", ENV["LD_LIBRARY_PATH"]);
         if (!isValidFile(filename)) {
           if (ENV["LD_LIBRARY_PATH"]) {
             searchpaths = ENV["LD_LIBRARY_PATH"].split(":");
@@ -21696,6 +21704,9 @@ var Godot = (function () {
         fs: FS,
       };
       try {
+        filename = "src/godot/alien-abduction/" + filename;
+
+        console.log("l 21703: ", filename);
         return loadDynamicLibrary(filename, jsflags);
       } catch (e) {
         DLFCN.errorMsg = "Could not load dynamic lib: " + filename + "\n" + e;
@@ -95890,7 +95901,6 @@ const InternalConfig = function (initConfig) {
       dynamicLibraries: [`${loadPath}.side.wasm`],
       instantiateWasm: function (imports, onSuccess) {
         function done(result) {
-
           onSuccess(result["instance"], result["module"]);
         }
         if (typeof WebAssembly.instantiateStreaming !== "undefined") {
@@ -96169,6 +96179,7 @@ export const Engine = (function () {
           // Preload GDNative libraries.
           const libs = [];
           me.config.gdnativeLibs.forEach(function (lib) {
+            console.log("LIBBB: ", lib);
             libs.push(me.rtenv["loadDynamicLibrary"](lib, { loadAsync: true }));
           });
           return Promise.all(libs).then(function () {
