@@ -1,6 +1,19 @@
 <template>
+  <layout></layout>
   <router-view />
 </template>
+
+<script lang="ts">
+import { defineComponent } from "vue";
+import Layout from "./layout/Layout.vue";
+
+export default defineComponent({
+  name: "AlienAbduction",
+  components: {
+    Layout,
+  },
+});
+</script>
 
 <style>
 #app {
@@ -25,5 +38,6 @@
 }
 body {
   background-color: #f7eccc;
+  margin: 0px;
 }
 </style>
