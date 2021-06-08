@@ -1,6 +1,6 @@
 <template>
   <div class="about">
-    <game-container></game-container>
+    <game-container game-path="landlord"></game-container>
   </div>
 </template>
 
@@ -9,7 +9,7 @@ import { defineComponent } from "vue";
 import GameContainer from "@/components/GameContainer.vue";
 
 export default defineComponent({
-  name: "Home",
+  name: "Landlord",
   components: {
     GameContainer,
   },

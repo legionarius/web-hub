@@ -26,20 +26,23 @@
 <script>
 import { defineComponent, onUnmounted } from "vue";
 import { Engine } from "@/godot/godot.js";
-import { useRouter } from "vue-router";
 
 export default defineComponent({
-  setup() {
-    const router = useRouter();
+  name: "GameContainer",
+  props: {
+    gamePath: {
+      type: String,
+      required: true,
+    },
+  },
+  setup(props) {
     const GODOT_CONFIG = {
       args: [],
       canvasResizePolicy: 1,
-      executable: `src/godot/${router.currentRoute.value.params.game}/index`,
+      executable: `src/godot/${props.gamePath}/index`,
       experimentalVK: false,
       fileSizes: { "index.pck": 13681728, "index.wasm": 1270027 },
-      gdnativeLibs: [
-        `src/godot/${router.currentRoute.value.params.game}/libgdnative.wasm`,
-      ],
+      gdnativeLibs: [`src/godot/${props.gamePath}/libgdnative.wasm`],
     };
     const engine = new Engine(GODOT_CONFIG);
 
