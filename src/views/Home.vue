@@ -1,10 +1,11 @@
 <template>
-  <div class="home">
+  <div id="games-container">
     <game-card
       v-for="game in games"
       :game-name="game.name"
       :game-img-path="game.imgPath"
       :key="game.name"
+      class="game-card"
     ></game-card>
   </div>
 </template>
@@ -44,3 +45,14 @@ export default defineComponent({
   },
 });
 </script>
+<style scoped>
+#games-container {
+  display: inline-block;
+  margin-top: 100px;
+}
+
+.game-card{
+  margin-left: 10px;
+  margin-right: 10px;
+}
+</style>

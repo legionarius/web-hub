@@ -1,13 +1,11 @@
 <template>
-  <div id="img-presentation-container">
-    <!--    TODO: regler default qui ne doit pas être necessaire-->
-    <img
-      id="img-presentation"
-      :src="props.gameImgPath.default"
-      :alt="`${props.gameName} presentation`"
-      @click="goToGamePage"
-    />
-  </div>
+  <!--    TODO: regler default qui ne doit pas être necessaire-->
+  <img
+    id="img-presentation"
+    :src="props.gameImgPath.default"
+    :alt="`${props.gameName} presentation`"
+    @click="goToGamePage"
+  />
 </template>
 
 <script>
