@@ -12,4 +12,9 @@ require("./godot/alien-abduction/index.wasm");
 require("./godot/alien-abduction/index.side.wasm");
 require("./godot/alien-abduction/libgdnative.wasm");
 
+require("./godot/landlord/index.pck");
+require("./godot/landlord/index.wasm");
+require("./godot/landlord/index.side.wasm");
+require("./godot/landlord/libgdnative.wasm");
+
 createApp(App).use(router).mount("#app");
