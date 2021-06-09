@@ -11,7 +11,7 @@ module.exports = {
       .options({
         name(resourcePath, resourceQuery) {
           const filePath = resourcePath.replace(__dirname, "")
-            .replaceAll("\\", "/")
+            .replace(/["\\"]/g, "/")
             .replace("/src/", "");
           return filePath;
         },
