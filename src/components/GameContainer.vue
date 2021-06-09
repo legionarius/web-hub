@@ -8,12 +8,12 @@
       <div
         id="status-progress"
         ref="statusProgress"
-        v-bind:style="{display: statusProgressDisplay}"
+        v-bind:style="{ display: statusProgressDisplay }"
       >
         <div
           id="status-progress-inner"
           ref="statusProgressInner"
-          v-bind:style="{width: statusProgressInnerWidth}"
+          v-bind:style="{ width: statusProgressInnerWidth }"
         ></div>
       </div>
       <!--      <div id="status-indeterminate" style="display: none">-->
@@ -33,7 +33,6 @@
 
 <script>
 import { defineComponent, onMounted, onUnmounted, ref } from "vue";
-import { Engine } from "@/godot/godot.js";
 
 export default defineComponent({
   name: "GameContainer",
@@ -55,28 +54,38 @@ export default defineComponent({
       fileSizes: { "index.pck": 13681728, "index.wasm": 1270027 },
       gdnativeLibs: [`godot/${props.gamePath}/libgdnative.wasm`],
     };
-    const engine = new Engine(GODOT_CONFIG);
+    let engine = null;
 
     function displayFailureNotice(err) {
-      var msg = err.message || err;
+      let msg = err.message || err;
       console.error("Erreur de chargemebt", msg);
     }
     onMounted(() => {
       statusProgressDisplay.value = "block";
-      engine
-        .startGame({
-          onProgress: function (current, total) {
-            statusProgressInnerWidth.value = ((current / 11980252) % 1) * 100 + "%";
-          },
-        })
-        .then(() => {
-          statusProgressDisplay.value = "none";
-        }, displayFailureNotice);
+      Promise.all([
+        import("@/godot/godot.js"),
+        import(`../godot/${props.gamePath}/index.pck`),
+        import(`../godot/${props.gamePath}/index.wasm`),
+        import(`../godot/${props.gamePath}/index.side.wasm`),
+        import(`../godot/${props.gamePath}/libgdnative.wasm`),
+      ]).then(([{ Engine }]) => {
+        engine = new Engine(GODOT_CONFIG);
+        engine
+          .startGame({
+            onProgress: function (current, total) {
+              statusProgressInnerWidth.value =
+                ((current / 11980252) % 1) * 100 + "%";
+            },
+          })
+          .then(() => {
+            statusProgressDisplay.value = "none";
+          }, displayFailureNotice);
+      });
     });
 
-    onUnmounted(() => {
-      engine.requestQuit();
-    });
+    // onUnmounted(() => {
+    //   engine.requestQuit();
+    // });
 
     return {
       statusProgressDisplay,
