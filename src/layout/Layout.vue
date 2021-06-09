@@ -19,7 +19,7 @@ export default defineComponent({
     const router = useRouter();
 
     function goToHome() {
-      router.push({ name: "Home"});
+      router.push({ name: "Home" });
     }
 
     return {

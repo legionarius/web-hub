@@ -2,7 +2,7 @@
   <!--    TODO: regler default qui ne doit pas être necessaire-->
   <img
     id="img-presentation"
-    :src="props.gameImgPath.default"
+    :src="props.gameImgPath"
     :alt="`${props.gameName} presentation`"
     @click="goToGamePage"
   />

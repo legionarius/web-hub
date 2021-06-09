@@ -1,12 +1,20 @@
 <template>
-  <div id="games-container">
-    <game-card
-      v-for="game in games"
-      :game-name="game.name"
-      :game-img-path="game.imgPath"
-      :key="game.name"
-      class="game-card"
-    ></game-card>
+  <div>
+    <div id="video-container">
+      <video preload="metadata" muted autoplay>
+        <source :src="require('../assets/splashscreen.mp4').default" type="video/mp4" />
+        Your browser does not support the video tag.
+      </video>
+    </div>
+    <div id="games-container">
+      <game-card
+        v-for="game in games"
+        :game-name="game.name"
+        :game-img-path="game.imgPath.default"
+        :key="game.name"
+        class="game-card"
+      ></game-card>
+    </div>
   </div>
 </template>
 
@@ -51,8 +59,13 @@ export default defineComponent({
   margin-top: 100px;
 }
 
-.game-card{
+.game-card {
   margin-left: 10px;
   margin-right: 10px;
+}
+
+video {
+  width: 100%    !important;
+  height: auto   !important;
 }
 </style>
