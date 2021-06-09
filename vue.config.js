@@ -9,7 +9,12 @@ module.exports = {
       .use("file-loader")
       .loader("file-loader")
       .options({
-        name: "[path][name].[ext]",
+        name(resourcePath, resourceQuery) {
+          const filePath = resourcePath.replace(__dirname, "")
+            .replaceAll("\\", "/")
+            .replace("/src/", "");
+          return filePath;
+        },
       });
     config.resolve.extensions.delete(".wasm");
   },

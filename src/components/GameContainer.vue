@@ -39,10 +39,10 @@ export default defineComponent({
     const GODOT_CONFIG = {
       args: [],
       canvasResizePolicy: 1,
-      executable: `src/godot/${props.gamePath}/index`,
+      executable: `godot/${props.gamePath}/index`,
       experimentalVK: false,
       fileSizes: { "index.pck": 13681728, "index.wasm": 1270027 },
-      gdnativeLibs: [`src/godot/${props.gamePath}/libgdnative.wasm`],
+      gdnativeLibs: [`godot/${props.gamePath}/libgdnative.wasm`],
     };
     const engine = new Engine(GODOT_CONFIG);
 
