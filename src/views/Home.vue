@@ -1,8 +1,11 @@
 <template>
   <div>
     <div id="video-container">
-      <video preload="metadata" muted autoplay>
-        <source :src="require('../assets/splashscreen.mp4').default" type="video/mp4" />
+      <video ref="splashscreenVideo" preload="metadata" muted autoplay @ended="testLog">
+        <source
+          :src="require('../assets/splashscreen.mp4').default"
+          type="video/mp4"
+        />
         Your browser does not support the video tag.
       </video>
     </div>
@@ -47,8 +50,12 @@ export default defineComponent({
       },
     ];
 
+    function testLog(){
+      console.log("end video");
+    }
     return {
       games,
+      testLog,
     };
   },
 });
@@ -65,7 +72,7 @@ export default defineComponent({
 }
 
 video {
-  width: 100%    !important;
-  height: auto   !important;
+  width: 100% !important;
+  height: auto !important;
 }
 </style>

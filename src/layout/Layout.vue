@@ -7,6 +7,7 @@
       @click="goToHome"
     />
   </div>
+  <router-view />
 </template>
 
 <script>

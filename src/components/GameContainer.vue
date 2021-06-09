@@ -62,7 +62,6 @@ export default defineComponent({
 
     onUnmounted(() => {
       engine.requestQuit();
-      console.log("unmount");
     });
   },
 });

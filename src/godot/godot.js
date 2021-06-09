@@ -1297,7 +1297,6 @@ var Godot = (function () {
     }
     Module["fetchBinary"] = fetchBinary;
     function loadDynamicLibrary(lib, flags) {
-
       if (lib == "__main__" && !LDSO.loadedLibNames[lib]) {
         LDSO.loadedLibs[-1] = {
           refcount: Infinity,
