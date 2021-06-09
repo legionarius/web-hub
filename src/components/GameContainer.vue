@@ -5,26 +5,34 @@
       Please try updating or use a different browser.
     </canvas>
     <div id="status">
-      <div id="status-progress" style="display: none">
-        <div id="status-progress-inner"></div>
+      <div
+        id="status-progress"
+        ref="statusProgress"
+        v-bind:style="{display: statusProgressDisplay}"
+      >
+        <div
+          id="status-progress-inner"
+          ref="statusProgressInner"
+          v-bind:style="{width: statusProgressInnerWidth}"
+        ></div>
       </div>
-      <div id="status-indeterminate" style="display: none">
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-      </div>
-      <div id="status-notice" class="godot" style="display: none"></div>
+      <!--      <div id="status-indeterminate" style="display: none">-->
+      <!--        <div></div>-->
+      <!--        <div></div>-->
+      <!--        <div></div>-->
+      <!--        <div></div>-->
+      <!--        <div></div>-->
+      <!--        <div></div>-->
+      <!--        <div></div>-->
+      <!--        <div></div>-->
+      <!--      </div>-->
+      <!--      <div id="status-notice" class="godot" style="display: none"></div>-->
     </div>
   </div>
 </template>
 
 <script>
-import { defineComponent, onUnmounted } from "vue";
+import { defineComponent, onMounted, onUnmounted, ref } from "vue";
 import { Engine } from "@/godot/godot.js";
 
 export default defineComponent({
@@ -36,6 +44,9 @@ export default defineComponent({
     },
   },
   setup(props) {
+    const statusProgressDisplay = ref("none");
+    const statusProgressInnerWidth = ref("0%");
+
     const GODOT_CONFIG = {
       args: [],
       canvasResizePolicy: 1,
@@ -50,19 +61,27 @@ export default defineComponent({
       var msg = err.message || err;
       console.error("Erreur de chargemebt", msg);
     }
-    engine
-      .startGame({
-        onProgress: function (current, total) {
-          console.log(`current: ${current}; total: ${total}`);
-        },
-      })
-      .then(() => {
-        console.log("game started");
-      }, displayFailureNotice);
+    onMounted(() => {
+      statusProgressDisplay.value = "block";
+      engine
+        .startGame({
+          onProgress: function (current, total) {
+            statusProgressInnerWidth.value = ((current / 11980252) % 1) * 100 + "%";
+          },
+        })
+        .then(() => {
+          statusProgressDisplay.value = "none";
+        }, displayFailureNotice);
+    });
 
     onUnmounted(() => {
       engine.requestQuit();
     });
+
+    return {
+      statusProgressDisplay,
+      statusProgressInnerWidth,
+    };
   },
 });
 </script>
@@ -113,6 +132,7 @@ body {
 #status-progress {
   width: 366px;
   height: 7px;
+  display: none;
   background-color: #38363a;
   border: 1px solid #444246;
   padding: 1px;
@@ -129,7 +149,6 @@ body {
 
 #status-progress-inner {
   height: 100%;
-  width: 0;
   box-sizing: border-box;
   transition: width 0.5s linear;
   background-color: #202020;
