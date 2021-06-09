@@ -79,8 +79,6 @@ body {
 
 #canvas {
   color: white;
-  width: 1800px;
-  height: 1013px;
 }
 
 #canvas:focus {
