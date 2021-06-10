@@ -1,7 +1,13 @@
 <template>
   <div>
     <div id="video-container">
-      <video ref="splashscreenVideo" preload="metadata" muted autoplay @ended="testLog">
+      <video
+        ref="splashscreenVideo"
+        preload="metadata"
+        muted
+        autoplay
+        @ended="testLog"
+      >
         <source
           :src="require('../assets/splashscreen.mp4').default"
           type="video/mp4"
@@ -50,7 +56,7 @@ export default defineComponent({
       },
     ];
 
-    function testLog(){
+    function testLog() {
       console.log("end video");
     }
     return {
