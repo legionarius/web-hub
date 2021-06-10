@@ -1,6 +1,10 @@
 <template>
   <div class="about">
-    <game-container game-path="alien-abduction"></game-container>
+    <game-container
+      game-path="alien-abduction"
+      :pck-file-size="13830032"
+      :wasm-file-size="1310540"
+    ></game-container>
   </div>
 </template>
 

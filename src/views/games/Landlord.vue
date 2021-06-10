@@ -1,6 +1,10 @@
 <template>
   <div class="about">
-    <game-container game-path="landlord"></game-container>
+    <game-container
+      game-path="landlord"
+      :pck-file-size="29292752"
+      :wasm-file-size="1310540"
+    ></game-container>
   </div>
 </template>
 

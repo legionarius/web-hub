@@ -41,6 +41,14 @@ export default defineComponent({
       type: String,
       required: true,
     },
+    pckFileSize: {
+      type: Number,
+      required: true,
+    },
+    wasmFileSize: {
+      type: Number,
+      required: true,
+    },
   },
   setup(props) {
     const statusProgressDisplay = ref("none");
@@ -51,7 +59,10 @@ export default defineComponent({
       canvasResizePolicy: 1,
       executable: `godot/${props.gamePath}/index`,
       experimentalVK: false,
-      fileSizes: { "index.pck": 13681728, "index.wasm": 1270027 },
+      fileSizes: {
+        [`godot/${props.gamePath}/index.pck`]: props.pckFileSize,
+        [`godot/${props.gamePath}/index.wasm`]: props.wasmFileSize,
+      },
       gdnativeLibs: [`godot/${props.gamePath}/libgdnative.wasm`],
     };
     let engine = null;
@@ -70,9 +81,11 @@ export default defineComponent({
         import(`../godot/${props.gamePath}/libgdnative.wasm`),
       ]).then(([{ Engine }]) => {
         engine = new Engine(GODOT_CONFIG);
+
         engine
           .startGame({
             onProgress: function (current, total) {
+              console.log("total", total);
               statusProgressInnerWidth.value =
                 ((current / 11980252) % 1) * 100 + "%";
             },

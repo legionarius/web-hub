@@ -1,6 +1,10 @@
 <template>
   <div class="about">
-    <game-container game-path="puppets-runner"></game-container>
+    <game-container
+      game-path="puppets-runner"
+      :pck-file-size="10669712"
+      :wasm-file-size="1310540"
+    ></game-container>
   </div>
 </template>
 
