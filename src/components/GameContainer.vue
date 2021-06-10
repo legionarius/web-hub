@@ -96,9 +96,9 @@ export default defineComponent({
       });
     });
 
-    // onUnmounted(() => {
-    //   engine.requestQuit();
-    // });
+    onUnmounted(() => {
+      engine.requestQuit();
+    });
 
     return {
       statusProgressDisplay,
