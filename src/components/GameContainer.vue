@@ -5,28 +5,25 @@
       Please try updating or use a different browser.
     </canvas>
     <div id="status">
-      <div
-        id="status-progress"
-        ref="statusProgress"
-        v-bind:style="{ display: statusProgressDisplay }"
-      >
-        <div
-          id="status-progress-inner"
-          ref="statusProgressInner"
-          v-bind:style="{ width: statusProgressInnerWidth }"
-        ></div>
+      <div id="status-progress" ref="statusProgress">
+        <div id="status-progress-inner" ref="statusProgressInner"></div>
       </div>
-      <!--      <div id="status-indeterminate" style="display: none">-->
-      <!--        <div></div>-->
-      <!--        <div></div>-->
-      <!--        <div></div>-->
-      <!--        <div></div>-->
-      <!--        <div></div>-->
-      <!--        <div></div>-->
-      <!--        <div></div>-->
-      <!--        <div></div>-->
-      <!--      </div>-->
-      <!--      <div id="status-notice" class="godot" style="display: none"></div>-->
+      <div ref="statusIndeterminate" id="status-indeterminate">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+      </div>
+      <div
+        ref="statusNotice"
+        id="status-notice"
+        class="godot"
+        style="display: none"
+      ></div>
     </div>
   </div>
 </template>
@@ -51,9 +48,11 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const statusProgressDisplay = ref("none");
-    const statusProgressInnerWidth = ref("0%");
+    const statusProgress = ref(null);
+    const statusIndeterminate = ref(null);
+    const statusProgressInner = ref(null);
 
+    const INDETERMINATE_STATUS_STEP_MS = 100;
     const GODOT_CONFIG = {
       args: [],
       canvasResizePolicy: 1,
@@ -66,13 +65,46 @@ export default defineComponent({
       gdnativeLibs: [`godot/${props.gamePath}/libgdnative.wasm`],
     };
     let engine = null;
+    var animationCallbacks = [];
+
+    function setStatusMode(mode) {
+      [statusProgress, statusIndeterminate].forEach((elem) => {
+        elem.value.style.display = "none";
+      });
+      switch (mode) {
+        case "progress":
+          statusProgress.value.style.display = "block";
+          break;
+        case "indeterminate":
+          statusIndeterminate.value.style.display = "block";
+          animationCallbacks.push(animateStatusIndeterminate);
+          break;
+        case "hidden":
+          break;
+        default:
+          throw new Error("Invalid status mode");
+      }
+    }
+
+    function animateStatusIndeterminate(ms) {
+      const i = Math.floor((ms / INDETERMINATE_STATUS_STEP_MS) % 8);
+      if (statusIndeterminate.value.children[i].style.borderTopColor == "") {
+        Array.prototype.slice
+          .call(statusIndeterminate.value.children)
+          .forEach((child) => {
+            child.style.borderTopColor = "";
+          });
+        statusIndeterminate.value.children[i].style.borderTopColor = "#dfdfdf";
+      }
+    }
 
     function displayFailureNotice(err) {
       let msg = err.message || err;
-      console.error("Erreur de chargemebt", msg);
+      console.error("Erreur de chargement", msg);
     }
+
     onMounted(() => {
-      statusProgressDisplay.value = "block";
+      setStatusMode("indeterminate");
       Promise.all([
         import("@/godot/godot.js"),
         import(`../godot/${props.gamePath}/index.pck`),
@@ -82,17 +114,31 @@ export default defineComponent({
       ]).then(([{ Engine }]) => {
         engine = new Engine(GODOT_CONFIG);
 
-        engine
-          .startGame({
-            onProgress: function (current, total) {
-              console.log("total", total);
-              statusProgressInnerWidth.value =
-                ((current / 11980252) % 1) * 100 + "%";
-            },
-          })
-          .then(() => {
-            statusProgressDisplay.value = "none";
-          }, displayFailureNotice);
+        if (!Engine.isWebGLAvailable()) {
+          displayFailureNotice("WebGL not available");
+        } else {
+          engine
+            .startGame({
+              onProgress: function (current, total) {
+                if (total > 0) {
+                  statusProgressInner.value.style.width = `${
+                    (current / total) * 100
+                  }%`;
+                  setStatusMode("progress");
+                  if (current === total) {
+                    setTimeout(() => {
+                      setStatusMode("indeterminate");
+                    }, 500);
+                  }
+                } else {
+                  setStatusMode("indeterminate");
+                }
+              },
+            })
+            .then(() => {
+              setStatusMode("hidden");
+            }, displayFailureNotice);
+        }
       });
     });
 
@@ -101,8 +147,9 @@ export default defineComponent({
     });
 
     return {
-      statusProgressDisplay,
-      statusProgressInnerWidth,
+      statusProgress,
+      statusIndeterminate,
+      statusProgressInner,
     };
   },
 });
