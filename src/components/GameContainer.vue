@@ -65,7 +65,12 @@ export default defineComponent({
       gdnativeLibs: [`godot/${props.gamePath}/libgdnative.wasm`],
     };
     let engine = null;
-    var animationCallbacks = [];
+    const animationCallbacks = [];
+    function animate(time) {
+      animationCallbacks.forEach(callback => callback(time));
+      requestAnimationFrame(animate);
+    }
+    requestAnimationFrame(animate);
 
     function setStatusMode(mode) {
       [statusProgress, statusIndeterminate].forEach((elem) => {
@@ -125,10 +130,12 @@ export default defineComponent({
                     (current / total) * 100
                   }%`;
                   setStatusMode("progress");
-                  if (current === total) {
+                  console.log(`${current} : ${total}`);
+                  if (total - current < 1000) {
                     setTimeout(() => {
                       setStatusMode("indeterminate");
-                    }, 500);
+                      console.log("timeout");
+                    }, 100);
                   }
                 } else {
                   setStatusMode("indeterminate");
@@ -136,6 +143,7 @@ export default defineComponent({
               },
             })
             .then(() => {
+              console.log("finish");
               setStatusMode("hidden");
             }, displayFailureNotice);
         }
